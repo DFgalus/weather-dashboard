@@ -14,7 +14,7 @@ section {
     width: 25%;
     margin: 10px;
     padding: 10px;
-    background-color: wheat;
+    background-color: lightblue;
 }
 
 .search-button-panel {
@@ -32,7 +32,7 @@ section {
 .results-panel {
     width: 75%;
     padding-bottom: 10px;
-    visibility: ;
+    visibility: hidden ;
     font-family: 'Times New Roman', Times, serif;
 }
 

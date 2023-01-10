@@ -1,7 +1,9 @@
+//localStorage.clear();
+
 function findCity() {
     let cityName = titleCase($("#cityName")[0].value.trim());
 
-    let apiURL = "https://api.openweathermap.org/data/2.5/weather?=" + cityName + "&units=imperial&appid=85fdad770cb1b5590007071765f836b5";
+    let apiURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=85fdad770cb1b5590007071765f836b5";
     fetch(apiURL).then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
@@ -17,12 +19,14 @@ function findCity() {
 
                 localStorage.setItem(cityName, latLonPair);
 
-                apiURL = "https://api.openweathermap.org/data/3.0/onecall?lat=" + lat + "&lon=" + lon + "&exclude=minutely,hourly &appid=85fdad770cb1b5590007071765f836b5";
+                apiURL = "https://api.openweathermap.org/data/3.0/onecall?lat=" + lat + "&lon=" + lon + "&exclude=minutely,hourly&units=imperial&appid=85fdad770cb1b5590007071765f836b5";
+
 
                 fetch(apiURL).then(function (newResponse) {
                     if (newResponse.ok) {
                         newResponse.json().then(function (newData) {
                             getCurrentWeather(newData);
+                            
                         })
                     }
                 })
@@ -30,6 +34,7 @@ function findCity() {
             })
         }  else {
             alert("Cannot find city!!");
+            
         }
     })
 
@@ -37,7 +42,7 @@ function findCity() {
 
 //Function to get information for a city in the list
 function getListCity(coordinates) {
-    apiURL = "https://api.openweathermap.org/data/3.0/onecall?lat=" + coordinates[0] + "&lon=" + coorinates[1] + "&exclude=minutely,hourly &appid=85fdad770cb1b5590007071765f836b5";
+    apiURL = "https://api.openweathermap.org/data/3.0/onecall?lat=" + coordinates[0] + "&lon=" + coordinates[1] + "&exclude=minutely,hourly&units=imperial&appid=85fdad770cb1b5590007071765f836b5";
 
     fetch(apiURL).then(function (response) {
         if (response.ok) {
@@ -52,13 +57,13 @@ function getListCity(coordinates) {
 function getCurrentWeather(data) {
     $(".results-panel").addClass("visible");
 
-    $("#currentIcon")[0].src = "http://openweathermap.org/img/wn/" + data.daily(i + 1).weather.icon + "@2x.png";
-    $("#temperature")[0].textContent = "Temperature:" + data.current.temp.toFixed() + "\u2109";
-    $("#wind")[0].textContent = "Wind Speed:" + data.current.wind_speed.toFixed() + " MPH";
-    $("#humidity").textContent = "Humidity:" + data.current.humidity.toFixed() + " %";
+    $("#currentIcon")[0].src = "http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png";
+    $("#temperature")[0].textContent = "Temperature: " + data.current.temp.toFixed(1) + " \u2109";
+    $("#wind")[0].textContent = "Wind Speed: " + data.current.wind_speed.toFixed(1) + " MPH";
+    $("#humidity")[0].textContent = "Humidity: " + data.current.humidity.toFixed(1) + " %";
 
 
-    getFutureWeather();
+    getFutureWeather(data);
 
 
 }
@@ -67,7 +72,7 @@ function getFutureWeather(data) {
     for (var i = 0; i < 5; i++) {
         let futureWeather = {
             date: convertUnixTime(data, i),
-            icon: "http://openweathermap.org/img/wn/" + data.daily(i + 1).weather.icon + "@2x.png",
+            icon: "http://openweathermap.org/img/wn/" + data.daily[i + 1].weather[0].icon + "@2x.png",
             temp: data.daily[i + 1].temp.day.toFixed(1),
             wind: data.daily[i + 1].wind_speed,
             hum: data.daily[i + 1].humidity,
@@ -80,7 +85,7 @@ function getFutureWeather(data) {
         $(currentSelector)[0].textContent = "Temp: " + futureWeather.temp + "\u2109";
         currentSelector = "#wind-" + i;
         $(currentSelector)[0].textContent = "Wind: " + futureWeather.wind + " MPH";
-        currentSelector = "#hum-" + i;
+        currentSelector = "#humidity-" + i;
         $(currentSelector)[0].textContent = "Hum: " + futureWeather.hum + " %";
     }
 }
@@ -98,9 +103,9 @@ function titleCase(city) {
 
 //function to convert unix time that is fetched from the server
 function convertUnixTime(data, index) {
-    let dateObj = new Date(data.daily[index + 1].dt * 1000);
+    let dateObject = new Date(data.daily[index + 1].dt * 1000);
 
-    return (dateObj.toLocaleDateString());
+    return (dateObject.toLocaleDateString());
 }
 
 $("#search-button").on("click", function (e) {

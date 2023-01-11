@@ -22,7 +22,7 @@ Search for any city in the search box and press the search button to launch. You
 
 ## Link to Deployed Application
 
-https://dfgalus.github.io/Code-Quiz/
+https://dfgalus.github.io/weather-dashboard/
 
 ## License
 

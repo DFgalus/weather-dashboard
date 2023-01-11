@@ -7,7 +7,7 @@ function findCity() {
     fetch(apiURL).then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
-                $("#cityName")[0].textContent = cityName + "(" + dayjs().format('M/D/YYYY') + ")";
+                $("#city-name")[0].textContent = cityName + " " + "(" + dayjs().format('M/D/YYYY') + ")";
 
                 $("#city-list").append('<button type="button" class="list-group-item list-group-item-light list-group-item-action city-name">' + 
                 cityName);
